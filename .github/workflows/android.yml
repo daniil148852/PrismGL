@@ -38,12 +38,12 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        
+
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 || true
-        
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
       - name: Build release APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 || true
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
         
       - name: Verify APKs exist
         id: verify
@@ -86,7 +86,7 @@ jobs:
 
   rebuild-on-failure:
     needs: build
-    if: failure() && needs.build.outputs.debug_apk != 'true'
+    if: failure() || needs.build.outputs.debug_apk != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
