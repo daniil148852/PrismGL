@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#1a1a2e">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PrismGL"
+        android:textSize="28sp"
+        android:textColor="#00d4ff"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High-Performance Minecraft Renderer"
+        android:textSize="14sp"
+        android:textColor="#888"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status: Checking..."
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:background="#2a2a4e"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/deviceInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Device Info"
+        android:textSize="14sp"
+        android:textColor="#aaa"
+        android:padding="12dp"
+        android:background="#2a2a4e"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/installButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Install Renderer"
+        android:textSize="16sp"
+        android:backgroundTint="#00d4ff"
+        android:textColor="#000"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="16sp"
+        android:backgroundTint="#444"
+        android:textColor="#fff"/>
+
+</LinearLayout>

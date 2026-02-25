@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#1a1a2e">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="24sp"
+        android:textColor="#00d4ff"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Target FPS"
+        android:textSize="14sp"
+        android:textColor="#aaa"
+        android:layout_marginBottom="4dp"/>
+
+    <SeekBar
+        android:id="@+id/fpsSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:min="30"
+        android:max="144"
+        android:progress="60"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/fpsValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60 FPS"
+        android:textSize="14sp"
+        android:textColor="#fff"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resolution Scale"
+        android:textSize="14sp"
+        android:textColor="#aaa"
+        android:layout_marginBottom="4dp"/>
+
+    <SeekBar
+        android:id="@+id/resolutionSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="50"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/resolutionValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1.0x"
+        android:textSize="14sp"
+        android:textColor="#fff"
+        android:layout_marginBottom="24dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Shader Cache"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:gravity="center_vertical"/>
+
+        <Switch
+            android:id="@+id/shaderCacheSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Async Texture Loading"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:gravity="center_vertical"/>
+
+        <Switch
+            android:id="@+id/asyncLoadingSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Vulkan (ANGLE)"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:gravity="center_vertical"/>
+
+        <Switch
+            android:id="@+id/vulkanSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>
