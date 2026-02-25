@@ -31,8 +31,6 @@ jobs:
           
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-        with:
-          api-level: 34
           
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -43,23 +41,15 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-            
-      - name: Cache Android NDK
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.ANDROID_HOME }}/ndk
-          key: ${{ runner.os }}-ndk-${{ hashFiles('**/CMakeLists.txt') }}
-          
+             
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
-        continue-on-error: true
+        run: ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 || true
         
       - name: Build release APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
-        continue-on-error: true
+        run: ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 || true
         
       - name: Verify APKs exist
         id: verify
@@ -116,8 +106,6 @@ jobs:
           
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-        with:
-          api-level: 34
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
