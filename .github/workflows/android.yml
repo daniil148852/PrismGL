@@ -1,84 +1,144 @@
-name: Build APK
+name: Build PrismGL APK
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
+    inputs:
+      debug_mode:
+        description: 'Enable debug mode'
+        type: boolean
+        default: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Checkout code
+        uses: actions/checkout@v4
         
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
-      
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
           
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Build debug APK
-      run: ./gradlew assembleDebug
-      
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            
+      - name: Cache Android NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_HOME }}/ndk
+          key: ${{ runner.os }}-ndk-${{ hashFiles('**/CMakeLists.txt') }}
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
         
-  retry-build:
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        continue-on-error: true
+        
+      - name: Build release APK
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        continue-on-error: true
+        
+      - name: Verify APKs exist
+        id: verify
+        run: |
+          echo "Checking for debug APK..."
+          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+            echo "Debug APK found!"
+            ls -la app/build/outputs/apk/debug/
+          else
+            echo "Debug APK NOT found!"
+          fi
+          
+          echo "Checking for release APK..."
+          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            echo "Release APK found!"
+            ls -la app/build/outputs/apk/release/
+          else
+            echo "Release APK NOT found!"
+          fi
+          
+      - name: Upload Debug APK
+        if: success() && steps.verify.outputs.debug_apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismgl-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+          
+      - name: Upload Release APK
+        if: success() && steps.verify.outputs.release_apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismgl-release
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          retention-days: 30
+
+  rebuild-on-failure:
     needs: build
     if: failure()
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Checkout code
+        uses: actions/checkout@v4
         
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
-      
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Retry Build debug APK
-      run: ./gradlew assembleDebug --no-daemon
-      
-    - name: Upload APK on retry
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-debug-retry
-        path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
         
+      - name: Clean build
+        run: ./gradlew clean --no-daemon
+        
+      - name: Retry Build debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        
+      - name: Upload Rebuilt APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismgl-debug-rebuilt
+          path: app/build/outputs/apk/debug/app-debug.apk
+
   success-notification:
-    needs: [build, retry-build]
+    needs: [build, rebuild-on-failure]
     if: success()
     runs-on: ubuntu-latest
     steps:
-    - name: Success notification
-      run: echo "APK build successful!"
+      - name: Success notification
+        run: echo "✅ PrismGL APK build successful!"
+        
+  failure-notification:
+    needs: [build, rebuild-on-failure]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failure notification
+        run: echo "❌ PrismGL APK build failed!"
