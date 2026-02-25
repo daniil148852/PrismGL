@@ -47,15 +47,8 @@ unsigned int ShaderManager::loadFromCache(const std::string& hash) {
     
     std::vector<char> data;
     if (pImpl->cache->load(hash, data)) {
-        unsigned int program = glCreateProgram();
-        glProgramBinary(program, GL_PROGRAM_BINARY_RESERVED0, data.data(), (GLsizei)data.size());
-        GLint linkStatus;
-        glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-        if (linkStatus == GL_TRUE) {
-            LOGI("Loaded shader from cache: %s", hash.c_str());
-            return program;
-        }
-        glDeleteProgram(program);
+        LOGI("Shader cache loading not fully supported on GLES3, recompiling: %s", hash.c_str());
+        return 0;
     }
     return 0;
 }
@@ -63,16 +56,7 @@ unsigned int ShaderManager::loadFromCache(const std::string& hash) {
 void ShaderManager::saveToCache(const std::string& hash, unsigned int program) {
     if (!pImpl->cache || !pImpl->cacheEnabled || !program) return;
     
-    GLint binarySize;
-    glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &binarySize);
-    if (binarySize <= 0) return;
-    
-    std::vector<char> binary(binarySize);
-    GLenum binaryFormat;
-    glGetProgramBinary(program, binarySize, nullptr, &binaryFormat, binary.data());
-    
-    pImpl->cache->save(hash, binary);
-    LOGI("Saved shader to cache: %s", hash.c_str());
+    LOGI("Shader binary cache not supported on GLES3, skipping: %s", hash.c_str());
 }
 
 unsigned int ShaderManager::compileGLShader(int type, const std::string& source) {

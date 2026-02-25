@@ -5,6 +5,12 @@ project("PrismGL")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/renderer)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/gl)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/util)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/jni)
+
 add_library(prismgl SHARED
     jni/PrismGLJNI.cpp
     renderer/PrismGLRenderer.cpp
